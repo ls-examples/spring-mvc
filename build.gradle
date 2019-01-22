@@ -1,0 +1,36 @@
+buildscript {
+    ext {
+        springBootVersion = '2.1.2.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'ru.lilitweb'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    compile 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
+    compile group: 'com.h2database', name: 'h2', version: '1.4.197'
+    compile group: 'org.liquibase', name: 'liquibase-core'
+    compile group: 'mysql', name: 'mysql-connector-java'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.4.0-M1'
+    testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: '2.23.0'
+    testCompile group: 'org.assertj', name: 'assertj-db', version: '1.2.0'
+}
