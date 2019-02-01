@@ -10,4 +10,6 @@ public interface GenreDao {
     Genre getById(int id);
 
     List<Genre> getAll();
+
+    void delete(int id);
 }

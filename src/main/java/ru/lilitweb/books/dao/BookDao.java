@@ -13,4 +13,6 @@ public interface BookDao {
 
     List<Book> getAllByGenres(int[] genres);
     List<Book> getAllByAuthorId(int authorId);
+
+    void delete(int id);
 }

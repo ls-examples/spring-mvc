@@ -16,6 +16,7 @@ import ru.lilitweb.books.domain.Book;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(SpringRunner.class)
 @JdbcTest
@@ -53,6 +54,7 @@ public class BookDaoJdbcTest {
                 book.getAuthorId()
         ));
 
+        assertTrue(book.getId() > 0);
         assertEquals(1, countRecords);
     }
 
@@ -60,6 +62,9 @@ public class BookDaoJdbcTest {
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:db/data/bookDaoJdbc/beforeTestingUpdate.sql")
     public void update() {
         Book book = bookDao.getById(1);
+        book.setTitle("new title");
+        book.setDescription("new description");
+        book.setYear(book.getYear() + 1);
         bookDao.update(book);
         int countRecords = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "book", String.format(
                 "id=%d and title='%s' and year=%d and description='%s' and author_id='%s'",
@@ -71,6 +76,19 @@ public class BookDaoJdbcTest {
         ));
 
         assertEquals(1, countRecords);
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:db/data/bookDaoJdbc/beforeTestingDelete.sql")
+    public void delete() {
+        Book book = bookDao.getById(1);
+        bookDao.delete(1);
+        int countRecords = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "book", String.format(
+                "id=%d",
+                book.getId()
+        ));
+
+        assertEquals(0, countRecords);
     }
 
     @Test

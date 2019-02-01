@@ -64,4 +64,11 @@ public class GenreDaoJdbc implements GenreDao {
             return new Genre(id, name);
         }
     }
+
+    @Override
+    public void delete(int id) {
+        final HashMap<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        jdbc.update("delete from genre where id=:id", params);
+    }
 }

@@ -82,6 +82,19 @@ public class GenreDaoJdbcTest {
     }
 
     @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:db/data/genreDaoJdbc/beforeTestingDelete.sql")
+    public void delete() {
+        Genre genre = genreDao.getById(1);
+        genreDao.delete(1);
+        int countRecords = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "genre", String.format(
+                "id=%d",
+                genre.getId()
+        ));
+
+        assertEquals(0, countRecords);
+    }
+
+    @Test
     @SqlGroup({
             @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:db/data/genreDaoJdbc/resetTeble.sql"),
             @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:db/data/genreDaoJdbc/beforeTestingGetAll.sql")

@@ -65,4 +65,11 @@ public class UserDaoJdbc implements UserDao {
             return new User(id, fullname);
         }
     }
+
+    @Override
+    public void delete(int id) {
+        final HashMap<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        jdbc.update("delete from user where id=:id", params);
+    }
 }

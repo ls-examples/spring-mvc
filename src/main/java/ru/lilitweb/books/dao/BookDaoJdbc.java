@@ -2,7 +2,10 @@ package ru.lilitweb.books.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.lilitweb.books.domain.Book;
 
@@ -11,6 +14,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Repository
@@ -30,14 +34,16 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public void insert(Book book) {
-        final HashMap<String, Object> params = new HashMap<>();
-        params.put("id", book.getId());
-        params.put("title", book.getTitle());
-        params.put("year", book.getYear());
-        params.put("description", book.getDescription());
-        params.put("author_id", book.getAuthorId());
-        jdbc.update("insert into book (id, title, year, description, author_id) values (:id, :title, :year, :description, :author_id)",
-                params);
+        MapSqlParameterSource parameters = new MapSqlParameterSource()
+                .addValue("title", book.getTitle())
+                .addValue("year", book.getYear())
+                .addValue("description", book.getDescription())
+                .addValue("author_id", book.getAuthorId());
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbc.update("insert into book (title, year, description, author_id) values (:title, :year, :description, :author_id)",
+                parameters, keyHolder, new String[]{"id"});
+        book.setId(Objects.requireNonNull(keyHolder.getKey()).intValue());
     }
 
     @Override
@@ -81,6 +87,13 @@ public class BookDaoJdbc implements BookDao {
         params.put("author_id", authorId);
 
         return jdbc.query("select * from book where author_id=:author_id", params, new BookMapper());
+    }
+
+    @Override
+    public void delete(int id) {
+        final HashMap<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        jdbc.update("delete from book where id=:id", params);
     }
 
     private static class BookMapper implements RowMapper<Book> {

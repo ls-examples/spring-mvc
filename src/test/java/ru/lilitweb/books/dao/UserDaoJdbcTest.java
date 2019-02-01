@@ -83,6 +83,19 @@ public class UserDaoJdbcTest {
     }
 
     @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:db/data/userDaoJdbc/beforeTestingDelete.sql")
+    public void delete() {
+        User user = userDao.getById(1);
+        userDao.delete(1);
+        int countRecords = JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "user", String.format(
+                "id=%d",
+                user.getId()
+        ));
+
+        assertEquals(0, countRecords);
+    }
+
+    @Test
     @SqlGroup({
             @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:db/data/userDaoJdbc/resetTeble.sql"),
             @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:db/data/userDaoJdbc/beforeTestingGetAll.sql")
