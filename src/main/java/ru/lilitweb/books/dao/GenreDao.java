@@ -1,5 +1,6 @@
 package ru.lilitweb.books.dao;
 import ru.lilitweb.books.domain.Genre;
+import ru.lilitweb.books.domain.User;
 
 import java.util.List;
 

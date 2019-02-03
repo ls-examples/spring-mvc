@@ -1,16 +1,21 @@
 package ru.lilitweb.books.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 
 @Data
 @RequiredArgsConstructor
-@AllArgsConstructor
 public class Book {
     private int id;
+
+    public Book(int id, String title, int year, String description, int authorId) {
+        this.id = id;
+        this.title = title;
+        this.year = year;
+        this.description = description;
+        this.authorId = authorId;
+    }
 
     @NonNull
     private String title;
@@ -23,4 +28,6 @@ public class Book {
 
     @NonNull
     private int authorId;
+
+    private User author;
 }

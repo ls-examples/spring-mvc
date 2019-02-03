@@ -12,11 +12,16 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import ru.lilitweb.books.domain.Book;
+import ru.lilitweb.books.domain.User;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @JdbcTest
@@ -114,7 +119,7 @@ public class BookDaoJdbcTest {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:db/data/bookDaoJdbc/beforeTestingGetAllByGenres.sql")
     public void getAllByGenres() {
-        int[] genres = {1,2};
+        int[] genres = {1, 2};
         List<Book> books = bookDao.getAllByGenres(genres);
         assertEquals(2, books.size());
 
@@ -130,5 +135,22 @@ public class BookDaoJdbcTest {
 
         assertEquals("test book title(1)", books.get(0).getTitle());
         assertEquals("test book title(2)", books.get(1).getTitle());
+    }
+
+    @Test
+    public void loadAuthors() {
+        List<Book> books = new ArrayList<>();
+        Book book = new Book(
+                1,
+                "Руслан и Людмила",
+                2019,
+                "Описание",
+                1);
+        books.add(book);
+        UserDao userDao = mock(UserDao.class);
+
+        when(userDao.getByIds(Arrays.asList(1))).thenReturn(Arrays.asList(new User(1, "test name")));
+        bookDao.loadAuthors(books, userDao);
+        assertEquals("test name", book.getAuthor().getFullName());
     }
 }

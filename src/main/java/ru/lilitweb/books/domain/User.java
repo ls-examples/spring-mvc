@@ -8,7 +8,7 @@ import org.springframework.lang.NonNull;
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User implements Entity {
     private int id;
 
     @NonNull

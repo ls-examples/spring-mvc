@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.lilitweb.books.domain.Book;
+import ru.lilitweb.books.domain.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -67,6 +68,17 @@ public class BookDaoJdbc implements BookDao {
     @Override
     public List<Book> getAll() {
         return jdbc.query("select * from book", new HashMap<String, Book>(), new BookMapper());
+    }
+
+    @Override
+    public void loadAuthors(List<Book> books, RelationLoader<User> relationLoader) {
+        HasOneRelation.<Book, User>builder()
+                .entities(books)
+                .foreignKeyGetter(Book::getAuthorId)
+                .relationLoader(relationLoader)
+                .relationSetter(Book::setAuthor)
+                .build()
+                .load();
     }
 
     @Override

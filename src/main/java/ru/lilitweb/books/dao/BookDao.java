@@ -1,6 +1,8 @@
 package ru.lilitweb.books.dao;
 
 import ru.lilitweb.books.domain.Book;
+import ru.lilitweb.books.domain.User;
+
 import java.util.List;
 
 public interface BookDao {
@@ -14,5 +16,6 @@ public interface BookDao {
     List<Book> getAllByGenres(int[] genres);
     List<Book> getAllByAuthorId(int authorId);
 
+    void loadAuthors(List<Book> books, RelationLoader<User> usersLoader);
     void delete(int id);
 }
