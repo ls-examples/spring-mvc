@@ -43,7 +43,10 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> getAll() {
         List<Book> books = bookDao.getAll();
+
         bookDao.loadAuthors(books, userDao);
+        bookDao.loadGenres(books, genreDao);
+
         return books;
     }
 

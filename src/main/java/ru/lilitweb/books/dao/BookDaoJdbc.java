@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.lilitweb.books.domain.Book;
+import ru.lilitweb.books.domain.Genre;
 import ru.lilitweb.books.domain.User;
 
 import java.sql.ResultSet;
@@ -22,6 +23,20 @@ import java.util.stream.Collectors;
 public class BookDaoJdbc implements BookDao {
 
     private final NamedParameterJdbcTemplate jdbc;
+
+    private final HasOneRelation<Book, User> authorsRelation =
+            HasOneRelation.<Book, User>builder()
+                    .foreignKeyGetter(Book::getAuthorId)
+                    .relationSetter(Book::setAuthor)
+                    .build();
+
+    private final ManyToManyRelation<Book, Genre> genreRelation =
+            ManyToManyRelation.<Book, Genre>builder()
+                    .table("book_genre")
+                    .foreignKey("book_id")
+                    .otherKey("genre_id")
+                    .relationSetter(Book::setGenres)
+                    .build();
 
     @Autowired
     public BookDaoJdbc(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -71,14 +86,13 @@ public class BookDaoJdbc implements BookDao {
     }
 
     @Override
-    public void loadAuthors(List<Book> books, RelationLoader<User> relationLoader) {
-        HasOneRelation.<Book, User>builder()
-                .entities(books)
-                .foreignKeyGetter(Book::getAuthorId)
-                .relationLoader(relationLoader)
-                .relationSetter(Book::setAuthor)
-                .build()
-                .load();
+    public void loadAuthors(List<Book> books, RelatedEntitiesLoader<User> relatedEntitiesLoader) {
+        authorsRelation.load(books, relatedEntitiesLoader);
+    }
+
+    @Override
+    public void loadGenres(List<Book> books, RelatedEntitiesLoader<Genre> genresLoader) {
+        genreRelation.load(books, jdbc, genresLoader);
     }
 
     @Override

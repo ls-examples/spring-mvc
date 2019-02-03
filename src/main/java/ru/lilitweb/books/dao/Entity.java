@@ -1,4 +1,4 @@
-package ru.lilitweb.books.domain;
+package ru.lilitweb.books.dao;
 
 public interface Entity {
     int getId();

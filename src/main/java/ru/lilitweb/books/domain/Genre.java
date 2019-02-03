@@ -4,11 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
+import ru.lilitweb.books.dao.Entity;
 
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class Genre {
+public class Genre implements Entity {
     private int id;
 
     @NonNull
