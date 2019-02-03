@@ -12,6 +12,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import ru.lilitweb.books.domain.Book;
+import ru.lilitweb.books.domain.Genre;
 import ru.lilitweb.books.domain.User;
 
 import java.util.ArrayList;
@@ -25,11 +26,14 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @JdbcTest
-@Import({BookDaoJdbc.class, DataSourceAutoConfiguration.class})
+@Import({BookDaoJdbc.class, GenreDaoJdbc.class, DataSourceAutoConfiguration.class})
 public class BookDaoJdbcTest {
 
     @Autowired
     BookDao bookDao;
+
+    @Autowired
+    GenreDao genreDao;
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -152,5 +156,13 @@ public class BookDaoJdbcTest {
         when(userDao.getByIds(Arrays.asList(1))).thenReturn(Arrays.asList(new User(1, "test name")));
         bookDao.loadAuthors(books, userDao);
         assertEquals("test name", book.getAuthor().getFullName());
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:db/data/bookDaoJdbc/beforeTestingLoadGenres.sql")
+    public void loadGenres() {
+        List<Book> books = bookDao.getAll();
+        bookDao.loadGenres(books, genreDao);
+        assertEquals("Поэзия", books.get(0).getGenres().get(0).getName());
     }
 }

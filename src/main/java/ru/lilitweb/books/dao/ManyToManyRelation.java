@@ -9,16 +9,12 @@ import org.springframework.lang.NonNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
 
 @Builder
 public class ManyToManyRelation<E extends Entity, R extends Entity> {
-    private final ToIntFunction<E> foreignKeyGetter;
     private final RelationSetter<E, R> relationSetter;
     private final String table;
     private final String foreignKey;
@@ -26,19 +22,22 @@ public class ManyToManyRelation<E extends Entity, R extends Entity> {
 
     public void load(List<E> entities, NamedParameterJdbcTemplate jdbc, RelatedEntitiesLoader<R> relatedEntitiesLoader) {
         final HashMap<String, Object> params = new HashMap<>();
-        params.put("id", entities.stream().
+        params.put("ids", entities.stream().
                 mapToInt(Entity::getId).
                 distinct().
                 boxed().
                 collect(Collectors.toList()));
 
         List<Row> rows = jdbc.query(
-                "select * from :table where :foreignKey in (:ids)",
+                String.format("select * from %s where %s in (:ids)", table, foreignKey),
                 params,
                 new Mapper(foreignKey, otherKey));
 
-        List<R> relatedEntities = relatedEntitiesLoader.getByIds(
-                rows.stream().map(row -> row.otherKey).collect(Collectors.toList()));
+        List<Integer> relatedIds = rows.stream().map(row -> row.otherKey).collect(Collectors.toList());
+        List<R> relatedEntities = new ArrayList<>();
+        if (relatedIds.size() > 0) {
+            relatedEntities = relatedEntitiesLoader.getByIds(relatedIds);
+        }
 
         HashMap<Integer, Set<Integer>> foreignToOtherMap = new HashMap<>();
         rows.forEach(row -> {
@@ -52,8 +51,11 @@ public class ManyToManyRelation<E extends Entity, R extends Entity> {
             foreignToOtherMap.put(row.foreignKey, s);
         });
 
+        List<R> finalRelatedEntities = relatedEntities;
+
         entities.forEach(e -> relationSetter.apply(e,
-                relatedEntities.stream().
+                finalRelatedEntities.stream().
+                        filter(r -> foreignToOtherMap.containsKey(e.getId())).
                         filter(r -> foreignToOtherMap.get(e.getId()).contains(r.getId())).
                         collect(Collectors.toList())));
     }

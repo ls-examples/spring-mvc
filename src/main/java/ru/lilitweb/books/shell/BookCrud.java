@@ -49,6 +49,7 @@ public class BookCrud {
         headers.put("year", "Year");
         headers.put("description", "Description");
         headers.put("author", "Author");
+        headers.put("genres", "Genres");
         TableModel table = new BeanListTableModel<>(bookService.getAll(), headers);
         return new TableBuilder(table)
                 .addFullBorder(BorderStyle.fancy_light_double_dash)
