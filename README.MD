@@ -1,3 +1,14 @@
+# Examples
+
+- Thymeleaf
+- Validation
+- Locale switcher
+- Mongo repository
+- Spring shell
+- WebMvcTest
+- DataMongoTest
+
+# Shell commands
 ## Add book
 ```
 book-create --book "Руслан и людмила|2008|Хорошая книга|Пушкин А.С."
@@ -19,8 +30,8 @@ book-list
 ```
 
 ## Add comment
-book-add-comment --id "5c5f4d0dd46c0033cee60d05" --message "some message"
-```
+```book-add-comment --id "5c5f4d0dd46c0033cee60d05" --message "some message"```
+
 
 ## List comments
-book-comments --id "5c5f4d0dd46c0033cee60d05"
+```book-comments --id "5c5f4d0dd46c0033cee60d05"```
