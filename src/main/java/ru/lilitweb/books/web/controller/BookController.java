@@ -15,6 +15,7 @@ import ru.lilitweb.books.web.ResourceNotFoundException;
 import ru.lilitweb.books.web.conveter.BookFormToBookConverter;
 import ru.lilitweb.books.web.conveter.BookToBookFormConverter;
 import ru.lilitweb.books.web.form.BookForm;
+import ru.lilitweb.books.web.helper.PageHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -34,7 +35,7 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @GetMapping("/books")
+    @GetMapping({"/books", "/"})
     public String index(@RequestParam("page") Optional<Integer> page,
                         @RequestParam("search") Optional<String> searchValue,
                         HttpServletRequest request,
@@ -49,19 +50,9 @@ public class BookController {
                 ));
 
 
-        List<Integer> pageNumbers = new ArrayList<>();
-        if (bookPage.getTotalPages() > 0) {
-            pageNumbers = IntStream.rangeClosed(1, bookPage.getTotalPages())
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
-        model.addAttribute("books", bookPage.
-                get().
-                collect(Collectors.toList())
-        );
+        model.addAttribute("books", bookPage.get().collect(Collectors.toList()));
         model.addAttribute("bookPage", bookPage);
-        model.addAttribute("pageNumbers", pageNumbers);
+        model.addAttribute("pageNumbers", (new PageHelper<Book>()).getPageNumbers(bookPage));
         model.addAttribute("search", searchValue.orElse(""));
         model.addAttribute("currentUrlWithoutPage",
                 ServletUriComponentsBuilder.fromCurrentRequest()
