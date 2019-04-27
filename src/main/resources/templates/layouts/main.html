@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<html
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="#{main.title}"> Библиотека книг </title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
           integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/style.css}" href="css/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
@@ -27,11 +30,38 @@
                 </ul>
 
                 <div th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
-                        class="lang-switcher">
-                    <a th:href="${urlBuilder.replaceQueryParam('lang', 'ru').toUriString()}" href="?lang=ru" class="lang-switcher__item lang_ru"></a>
-                    <a th:href="${urlBuilder.replaceQueryParam('lang', 'en').toUriString()}" href="?lang=en" class="lang-switcher__item lang_en"></a>
+                     class="lang-switcher">
+                    <a th:href="${urlBuilder.replaceQueryParam('lang', 'ru').toUriString()}" href="?lang=ru"
+                       class="lang-switcher__item lang_ru"></a>
+                    <a th:href="${urlBuilder.replaceQueryParam('lang', 'en').toUriString()}" href="?lang=en"
+                       class="lang-switcher__item lang_en"></a>
                 </div>
             </div>
+            <ul class="ml-3 nav navbar-nav navbar-right">
+                <li sec:authorize="isAuthenticated()" class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                        <span sec:authentication="name"></span> <span class="caret"></span>
+                    </a>
+
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            <a href="/logout" th:text="#{layout.main.logout}">
+                                Выйти
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li sec:authorize="isAnonymous()" >
+                    <a href="/signin" th:text="#{layout.main.signin}" >
+                        Войти
+                    </a>
+                </li>
+                <li sec:authorize="isAnonymous()" >
+                    <a href="/signup" th:text="#{layout.main.signup}">
+                        Регистрация
+                    </a>
+                </li>
+            </ul>
         </nav>
     </header>
     <section class="page-content" layout:fragment="content">

@@ -3,6 +3,7 @@ package ru.lilitweb.books.web.controller;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +20,7 @@ import ru.lilitweb.books.web.helper.PageHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,10 +38,12 @@ public class BookController {
     }
 
     @GetMapping({"/books", "/"})
-    public String index(@RequestParam("page") Optional<Integer> page,
+    public String index(
+            @RequestParam("page") Optional<Integer> page,
                         @RequestParam("search") Optional<String> searchValue,
                         HttpServletRequest request,
                         Model model) {
+
         int pageNumber = page.orElse(1);
         int countOnPage = 10;
         Page<Book> bookPage = bookService.

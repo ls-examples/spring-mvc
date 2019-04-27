@@ -4,6 +4,7 @@
 - Validation
 - Locale switcher
 - Mongo repository
+- Spring security
 - Spring shell
 - WebMvcTest
 - DataMongoTest

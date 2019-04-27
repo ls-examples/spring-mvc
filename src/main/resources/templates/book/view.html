@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layouts/main}">
 <head>
@@ -30,6 +31,7 @@
         </div>
         <div class="card-footer">
             <a
+                    sec:authorize="hasRole('ROLE_ADMIN')"
                     th:href="@{'/book/' + ${book.getId()} + '/edit'}"
                     href="edit.html">
                 <button
@@ -37,6 +39,7 @@
                         class="btn btn-primary">Edit</button>
             </a>
             <button
+                    sec:authorize="hasRole('ROLE_ADMIN')"
                     th:text="#{button.delete}"
                     th:data-url="${'/book/' + book.getId()}"
                     th:data-redirect_url="${'/books/'}"

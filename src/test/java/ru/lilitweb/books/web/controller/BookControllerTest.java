@@ -3,6 +3,8 @@ package ru.lilitweb.books.web.controller;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.shell.jline.InteractiveShellApplicationRunner;
 import org.springframework.shell.jline.ScriptShellApplicationRunner;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -31,13 +34,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
+@AutoConfigureDataMongo
 public class BookControllerTest {
     @Autowired
     private MockMvc mvc;
 
+
     @MockBean
     BookService bookService;
 
+
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_USER"}
+    )
     @Test
     public void index() throws Exception {
         Book book = getTestBook();
@@ -53,6 +63,10 @@ public class BookControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_USER"}
+    )
     @Test
     public void viewBook() throws Exception {
         String id = "1";
@@ -64,6 +78,10 @@ public class BookControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
     @Test
     public void edit() throws Exception {
         String id = "1";
@@ -75,6 +93,10 @@ public class BookControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
     @Test
     public void update_ifSuccess() throws Exception {
         List<String> genres = Arrays.asList("поэзия", "new");
@@ -113,6 +135,10 @@ public class BookControllerTest {
         return book;
     }
 
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
     @Test
     public void create() throws Exception {
         this.mvc.perform(get("/book/create"))
@@ -120,6 +146,10 @@ public class BookControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
     @Test
     public void deleteBook() throws Exception {
         String id = "1";
@@ -130,6 +160,10 @@ public class BookControllerTest {
         verify(bookService, atLeastOnce()).delete(id);
     }
 
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
     @Test
     public void store() throws Exception {
         List<String> genres = Arrays.asList("поэзия", "new");
