@@ -36,3 +36,7 @@ book-list
 
 ## List comments
 ```book-comments --id "5c5f4d0dd46c0033cee60d05"```
+
+
+## Add admin
+```admin-create --email "admin@gmail.com" --password "password"```
