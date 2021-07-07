@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title th:text="#{signup.label.form.title}">Signup</title>
+</head>
+
+<body>
+<section layout:fragment="content">
+    <h1 th:text="#{signup.label.form.title}">Signup</h1>
+    <form  th:action="@{/signup}" th:object="${user}" method="POST">
+        <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+            <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
+        </div>
+        <div class="form-group">
+            <input required
+                    th:placeholder="#{label.user.fullname}"
+                    class="form-control"
+                    th:classappend="${#fields.hasErrors('fullname')} ? 'is-invalid' : ''"
+                    th:field="*{fullname}"/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}"></div>
+        </div>
+        <div class="form-group">
+            <input required th:placeholder="#{label.user.email}"  class="form-control"
+                   th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                   type="email" th:field="*{email}"/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        </div>
+        <div class="form-group">
+            <input required th:placeholder="#{label.user.password}" class="form-control"
+                   th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                   type="password" th:field="*{password}"/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        </div>
+        <div class="form-group">
+            <input required th:placeholder="#{label.user.confirmPass}"  class="form-control"
+                   th:classappend="${#fields.hasErrors('passwordConfirmation')} ? 'is-invalid' : ''"
+                   type="password" th:field="*{passwordConfirmation}"/>
+        </div>
+        <div>
+            <button
+                    th:text="#{label.form.submit}"
+                    class="btn btn-primary">submit</button>
+            <a th:href="@{/signin}" class="btn btn-link" th:text="#{label.form.loginLink}">login</a>
+        </div>
+    </form>
+</section>
+</body>
+</html>

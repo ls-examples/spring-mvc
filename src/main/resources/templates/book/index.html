@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layouts/main}">
 <head>
@@ -9,7 +11,7 @@
 <body>
 <section layout:fragment="content">
     <div>
-        <a th:text="#{books.button_create_book}"
+        <a  sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{books.button_create_book}"
            href="/book/create" class="btn btn-outline-success my-2 my-sm-0">Create book</a>
     </div>
     <form class="search mt-3" action="">

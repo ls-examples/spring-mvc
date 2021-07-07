@@ -22,7 +22,7 @@ class CommentRepositoryTest {
 
     @Test
     void add() {
-        User user = new User("some comment author");
+        User user = new User("some comment author", "addemail");
         mongoTemplate.save(user);
         Book book = new Book(
                 "Руслан и Людмила",
@@ -41,7 +41,7 @@ class CommentRepositoryTest {
 
     @Test
     void update() {
-        User user = new User("some comment author");
+        User user = new User("some comment author", "updateemail");
         mongoTemplate.save(user);
         Book book = new Book(
                 "Руслан и Людмила",
